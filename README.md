@@ -1,5 +1,7 @@
 # Emacs Copilot
 
+https://github.com/jart/emacs-copilot/assets/49262/1a79d4e4-9622-452e-9944-950c6f21d67f
+
 The `copilot-complete` function demonstrates that ~100 lines of LISP
 is all it takes for Emacs to do that thing Github Copilot and VSCode
 are famous for doing except superior w.r.t. both quality and freedom
