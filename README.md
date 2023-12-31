@@ -131,6 +131,18 @@ Writing English explanations is forbidden. ")
       (write-region spot end hist 'append 'silent))))
 ```
 
+## Emacs Download Link
+
+If you don't have Emacs installed, or you use a platform like Windows
+where it's normally difficult to obtain, then here's a single-file build
+of Emacs that (like llamafile) is directly runnable and needn't be
+installed.
+
+- <https://cosmo.zip/pub/cosmos/bin/emacs>
+
+See the [Gotchas](#gotchas) below if you have trouble running it. See
+also the [Supported OSes and CPUs](#supported-oses-and-cpus) list too.
+
 ## LLM Download Links
 
 Here are some LLMs that are known to work reasonably well with Emacs
