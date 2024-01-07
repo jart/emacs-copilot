@@ -77,14 +77,37 @@
   :type 'string
   :group 'copilot)
 
+(defcustom copilot-cache-directory-alist nil
+  "Alist of filename patterns and directory names.
+Each element looks like (REGEXP . DIRECTORY).
+
+See the documentation of the `backup-directory-alist' variable
+for details."
+  :group 'copilot
+  :type '(repeat (cons (regexp :tag "Regexp matching filename")
+		       (directory :tag "Directory to store cache and prompt"))))
+
+(defun copilot-make-cache-file-name (file suffix)
+  "Create the cache file name for FILE.
+Normally this is the file's name with \".\" prepended and
+\"SUFFIX\" appended.
+
+A match for FILE is sought in `copilot-cache-directory-alist'
+\(see the documentation of that variable for details\). If the
+directory for the backup doesn't exist, it is created."
+  (let* ((backup-directory-alist copilot-cache-directory-alist)
+	 (name (make-backup-file-name-1 file)))
+    (concat (file-name-directory name) "." (file-name-nondirectory name)
+	    suffix)))
+
 ;;;###autoload
 (defun copilot-complete ()
   (interactive)
   (let* ((spot (point))
          (inhibit-quit t)
          (curfile (buffer-file-name))
-         (cash (concat curfile ".cache"))
-         (hist (concat curfile ".prompt"))
+         (cash (copilot-make-cache-file-name curfile ".cache"))
+         (hist (copilot-make-cache-file-name curfile ".prompt"))
          (lang (file-name-extension curfile))
 
          ;; extract current line, to left of caret
@@ -120,9 +143,11 @@ Writing English explanations is forbidden. ")
         (kill-buffer (current-buffer))))
 
     ;; append prompt for current interaction to the big old prompt
+    (make-directory (file-name-directory hist) t)
     (write-region prompt nil hist 'append 'silent)
 
     ;; run llamafile streaming stdout into buffer catching ctrl-g
+    (make-directory (file-name-directory cash) t)
     (with-local-quit
       (call-process copilot-bin nil (list (current-buffer) nil) t
                     "--prompt-cache" cash
